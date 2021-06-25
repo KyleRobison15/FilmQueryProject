@@ -16,7 +16,7 @@ public class Film {
 	private String rating;
 	private String specialFeatures;
 	private List<Actor> actors;
-	
+	private String language;
 
 	public Film() {
 		
@@ -24,12 +24,12 @@ public class Film {
 	
 	public Film(int filmId, String title, String description, String releaseYear, int languageId, int rentalDuration,
 			double rentalRate, int length, double replacementCost, String rating, String specialFeatures) {
-		this(filmId, title, description, releaseYear, languageId, rentalDuration, rentalRate, length, replacementCost, rating, specialFeatures, null);
+		this(filmId, title, description, releaseYear, languageId, rentalDuration, rentalRate, length, replacementCost, rating, specialFeatures, null, null);
 
 	}
 
 	public Film(int filmId, String title, String description, String releaseYear, int languageId, int rentalDuration,
-			double rentalRate, int length, double replacementCost, String rating, String specialFeatures, List<Actor> actors) {
+			double rentalRate, int length, double replacementCost, String rating, String specialFeatures, List<Actor> actors, String language) {
 		super();
 		this.filmId = filmId;
 		this.title = title;
@@ -43,6 +43,7 @@ public class Film {
 		this.rating = rating;
 		this.specialFeatures = specialFeatures;
 		this.actors = actors;
+		this.language = language;
 	}
 	
 	public int getFilmId() {
@@ -140,6 +141,14 @@ public class Film {
 	public void setActors(List<Actor> actors) {
 		this.actors = actors;
 	}
+	
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
 
 	public void displaySimpleFilmInfo() {
 		System.out.println("Title:         " + title);
@@ -156,7 +165,8 @@ public class Film {
 				.append(languageId).append(", rentalDuration=").append(rentalDuration).append(", rentalRate=")
 				.append(rentalRate).append(", length=").append(length).append(", replacementCost=")
 				.append(replacementCost).append(", rating=").append(rating).append(", specialFeatures=")
-				.append(specialFeatures).append(", actors=").append(actors).append("]");
+				.append(specialFeatures).append(", actors=").append(actors).append(", language=").append(language)
+				.append("]");
 		return builder.toString();
 	}
 

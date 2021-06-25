@@ -1,5 +1,6 @@
 package com.skilldistillery.filmquery.app;
 
+import java.util.List;
 import java.util.Scanner;
 
 import com.skilldistillery.filmquery.database.DatabaseAccessor;
@@ -38,7 +39,7 @@ public class FilmQueryApp {
 			System.out.println("Please select an option from the menu below.");
 			System.out.println("---------------------------------------------");
 			System.out.println("1. Look up a film by its ID");
-			System.out.println("2. Look up a film by a keyword search");
+			System.out.println("2. Look up a films by a keyword search");
 			System.out.println("3. Exit Application");
 			System.out.println("---------------------------------------------");
 
@@ -46,7 +47,7 @@ public class FilmQueryApp {
 			input.nextLine();
 			usingMenu = doUserChoice(userChoice, input);
 		}
-		
+
 	}
 
 	private boolean doUserChoice(int userChoice, Scanner input) {
@@ -57,7 +58,7 @@ public class FilmQueryApp {
 			lookUpFilmById(input);
 			return true;
 		case 2:
-			// TODO Add method call to look up film by keyword search
+			lookUpFilmByKeyword(input);
 			return true;
 		case 3:
 			System.out.println("Thanks for using the Film Query App - Goodbye!");
@@ -69,9 +70,9 @@ public class FilmQueryApp {
 		}
 
 	}
-	
+
 	public void lookUpFilmById(Scanner input) {
-		
+
 		try {
 			System.out.println("Please enter the ID of the film.");
 			int filmId = input.nextInt();
@@ -80,16 +81,36 @@ public class FilmQueryApp {
 			System.out.println("---------------------------------------------");
 			film.displaySimpleFilmInfo();
 			System.out.println("---------------------------------------------");
-			
-		} 	
-		catch (NullPointerException e) {
+
+		} catch (NullPointerException e) {
 			System.out.println("---------------------------------------------");
-			System.err.println("Sorry, this ID was not found.");
-		}
-		catch (Exception e) {
+			System.out.println("Sorry, this ID was not found.");
+		} catch (Exception e) {
 			System.out.println("---------------------------------------------");
-			System.err.println("Sorry, this ID was not found.");
+			System.out.println("Sorry, this ID was not found.");
 		}
 	}
 
+	public void lookUpFilmByKeyword(Scanner input) {
+
+		System.out.println("Please enter a keyword.");
+		String keyword = input.nextLine();
+
+		List<Film> films = db.findFilmsByKeyword(keyword);
+
+		if (films.isEmpty()) {
+			System.out.println("---------------------------------------------");
+			System.out.println("Sorry, no films with this keyword were found.");
+			System.out.println("---------------------------------------------");
+			System.out.println();
+		}
+
+		else {
+			for (Film film : films) {
+				System.out.println("---------------------------------------------");
+				film.displaySimpleFilmInfo();
+				System.out.println("---------------------------------------------");
+			}
+		}
+	}
 }

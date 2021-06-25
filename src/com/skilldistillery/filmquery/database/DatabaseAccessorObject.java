@@ -39,20 +39,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			stmt.setInt(1, filmId);
 			ResultSet filmResult = stmt.executeQuery();
 			while (filmResult.next()) {
-				film = new Film();
-				film.setFilmId(filmResult.getInt("id"));
-				film.setTitle(filmResult.getString("title"));
-				film.setDescription(filmResult.getString("description"));
-				film.setReleaseYear(filmResult.getString("release_year"));
-				film.setLanguageId(filmResult.getInt("language_id"));
-				film.setRentalDuration(filmResult.getInt("rental_duration"));
-				film.setRentalRate(filmResult.getDouble("rental_rate"));
-				film.setLength(filmResult.getInt("length"));
-				film.setReplacementCost(filmResult.getDouble("replacement_cost"));
-				film.setSpecialFeatures(filmResult.getString("special_features"));
-				film.setRating(filmResult.getString("rating"));
-				film.setActors(findActorsByFilmId(filmId));
-
+				film = createFilm(filmResult);
 			}
 
 		    filmResult.close();
@@ -66,7 +53,37 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 
 		return film;
 	}
+	
+	@Override
+	public List<Film> findFilmsByKeyword(String keyword) {
+		List<Film> films = new ArrayList<>();
 
+		try {
+			Connection conn = DriverManager.getConnection(URL, user, pass);
+
+			String sql = "SELECT * FROM film WHERE film.title LIKE ? OR film.description LIKE ?";
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setString(1, "%" + keyword + "%");
+			stmt.setString(2, "%" + keyword + "%");
+			ResultSet filmResult = stmt.executeQuery();
+			while (filmResult.next()) {
+				Film film = new Film();
+				film = createFilm(filmResult);
+				films.add(film);
+			}
+
+		    filmResult.close();
+		    stmt.close();
+		    conn.close();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return films;
+	}
+	
 	@Override
 	public Actor findActorById(int actorId) {
 
@@ -135,6 +152,31 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		}
 
 		return actors;
+	}
+	
+	public Film createFilm(ResultSet filmResult) {
+		Film film = new Film();
+		
+		try {
+			
+			film.setFilmId(filmResult.getInt("id"));
+			film.setTitle(filmResult.getString("title"));
+			film.setDescription(filmResult.getString("description"));
+			film.setReleaseYear(filmResult.getString("release_year"));
+			film.setLanguageId(filmResult.getInt("language_id"));
+			film.setRentalDuration(filmResult.getInt("rental_duration"));
+			film.setRentalRate(filmResult.getDouble("rental_rate"));
+			film.setLength(filmResult.getInt("length"));
+			film.setReplacementCost(filmResult.getDouble("replacement_cost"));
+			film.setSpecialFeatures(filmResult.getString("special_features"));
+			film.setRating(filmResult.getString("rating"));
+			film.setActors(findActorsByFilmId(filmResult.getInt("id")));
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return film;
 	}
 
 }
