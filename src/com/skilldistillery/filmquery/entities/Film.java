@@ -141,7 +141,9 @@ public class Film {
 		this.actors = actors;
 	}
 
-
+	public void displayFilmInfo() {
+		
+	}
 
 	@Override
 	public String toString() {
