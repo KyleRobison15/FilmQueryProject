@@ -13,14 +13,8 @@ public class FilmQueryApp {
 
 	public static void main(String[] args) {
 		FilmQueryApp app = new FilmQueryApp();
-//		app.test();
 		app.launch();
 	}
-
-//	private void test() {
-//		Film film = db.findFilmById(1);
-//		System.out.println(film);
-//	}
 
 	private void launch() {
 		Scanner input = new Scanner(System.in);

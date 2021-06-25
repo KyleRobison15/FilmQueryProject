@@ -8,8 +8,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.skilldistillery.filmquery.entities.Actor;
-import com.skilldistillery.filmquery.entities.Film;
+import com.skilldistillery.filmquery.entities.*;
+
 
 public class DatabaseAccessorObject implements DatabaseAccessor {
 	// Establish connection to DB
@@ -27,6 +27,8 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		}
 	}
 
+/////////////////////////////////////////////////// FILM ///////////////////////////////////////////////////
+
 	@Override
 	public Film findFilmById(int filmId) {
 		Film film = null;
@@ -42,10 +44,10 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 				film = createFilm(filmResult);
 			}
 
-		    filmResult.close();
-		    stmt.close();
-		    conn.close();
-			
+			filmResult.close();
+			stmt.close();
+			conn.close();
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -53,7 +55,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 
 		return film;
 	}
-	
+
 	@Override
 	public List<Film> findFilmsByKeyword(String keyword) {
 		List<Film> films = new ArrayList<>();
@@ -72,10 +74,10 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 				films.add(film);
 			}
 
-		    filmResult.close();
-		    stmt.close();
-		    conn.close();
-			
+			filmResult.close();
+			stmt.close();
+			conn.close();
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -83,7 +85,35 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 
 		return films;
 	}
-	
+
+	public Film createFilm(ResultSet filmResult) {
+		Film film = new Film();
+
+		try {
+
+			film.setFilmId(filmResult.getInt("id"));
+			film.setTitle(filmResult.getString("title"));
+			film.setDescription(filmResult.getString("description"));
+			film.setReleaseYear(filmResult.getString("release_year"));
+			film.setLanguageId(filmResult.getInt("language_id"));
+			film.setRentalDuration(filmResult.getInt("rental_duration"));
+			film.setRentalRate(filmResult.getDouble("rental_rate"));
+			film.setLength(filmResult.getInt("length"));
+			film.setReplacementCost(filmResult.getDouble("replacement_cost"));
+			film.setSpecialFeatures(filmResult.getString("special_features"));
+			film.setRating(filmResult.getString("rating"));
+			film.setActors(findActorsByFilmId(filmResult.getInt("id")));
+			film.setLanguage(findLanguageByFilmId(filmResult.getInt("id")));
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return film;
+	}
+
+/////////////////////////////////////////////////// ACTOR ///////////////////////////////////////////////////
+
 	@Override
 	public Actor findActorById(int actorId) {
 
@@ -104,10 +134,10 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 
 			}
 
-		    actorResult.close();
-		    stmt.close();
-		    conn.close();
-			
+			actorResult.close();
+			stmt.close();
+			conn.close();
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -124,27 +154,27 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		try {
 			Connection conn = DriverManager.getConnection(URL, user, pass);
 
-			String sql =  "SELECT * " +
-					  		"FROM actor " +
-					  		"JOIN film_actor ON film_actor.actor_id = actor.id " +
-					  		"JOIN film ON film_actor.film_id = film.id " +
-					  		"WHERE film.id = ?";
-					
+			String sql = "SELECT * " + 
+						 "FROM actor " + 
+						 "JOIN film_actor ON film_actor.actor_id = actor.id " +
+						 "JOIN film ON film_actor.film_id = film.id " + 
+						 "WHERE film.id = ?";
+
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, filmId);
 			ResultSet actorsResult = stmt.executeQuery();
 			while (actorsResult.next()) {
-				
+
 				int actorId = actorsResult.getInt("actor.id");
 				String actorFirstName = actorsResult.getString("actor.first_name");
 				String actorLastName = actorsResult.getString("actor.last_name");
 				Actor actor = new Actor(actorId, actorFirstName, actorLastName);
 				actors.add(actor);
 			}
-			
-		    actorsResult.close();
-		    stmt.close();
-		    conn.close();
+
+			actorsResult.close();
+			stmt.close();
+			conn.close();
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -153,30 +183,40 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 
 		return actors;
 	}
-	
-	public Film createFilm(ResultSet filmResult) {
-		Film film = new Film();
-		
+
+/////////////////////////////////////////////////// LANGUAGE ///////////////////////////////////////////////////
+
+	@Override
+	public Language findLanguageByFilmId(int filmId) {
+
+		Language language = null;
+
 		try {
+			Connection conn = DriverManager.getConnection(URL, user, pass);
+
+			String sql = "SELECT * " +
+						 "FROM language " +
+						 "JOIN film ON language.id = film.language_id " +
+						 "WHERE film.id = ?";
 			
-			film.setFilmId(filmResult.getInt("id"));
-			film.setTitle(filmResult.getString("title"));
-			film.setDescription(filmResult.getString("description"));
-			film.setReleaseYear(filmResult.getString("release_year"));
-			film.setLanguageId(filmResult.getInt("language_id"));
-			film.setRentalDuration(filmResult.getInt("rental_duration"));
-			film.setRentalRate(filmResult.getDouble("rental_rate"));
-			film.setLength(filmResult.getInt("length"));
-			film.setReplacementCost(filmResult.getDouble("replacement_cost"));
-			film.setSpecialFeatures(filmResult.getString("special_features"));
-			film.setRating(filmResult.getString("rating"));
-			film.setActors(findActorsByFilmId(filmResult.getInt("id")));
-			
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, filmId);
+			ResultSet languageResult = stmt.executeQuery();
+			while (languageResult.next()) {
+				language = new Language();
+				language.setId(languageResult.getInt("id"));
+				language.setLanguageName(languageResult.getString("name"));
+			}
+
+			languageResult.close();
+			stmt.close();
+			conn.close();
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return film;
-	}
 
+		return language;
+	}
 }

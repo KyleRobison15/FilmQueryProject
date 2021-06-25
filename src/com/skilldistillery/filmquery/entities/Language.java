@@ -14,11 +14,28 @@ public class Language {
 		this.id = id;
 		this.languageName = languageName;
 	}
+	
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getLanguageName() {
+		return languageName;
+	}
+
+	public void setLanguageName(String languageName) {
+		this.languageName = languageName;
+	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Language [id=").append(id).append(", languageName=").append(languageName).append("]");
+		builder.append("Language:      ").append(languageName);
 		return builder.toString();
 	}
 
