@@ -44,18 +44,17 @@ public class FilmQueryApp {
 
 			userChoice = input.nextInt();
 			input.nextLine();
-			usingMenu = doUserChoice(userChoice);
+			usingMenu = doUserChoice(userChoice, input);
 		}
-		
 		
 	}
 
-	private boolean doUserChoice(int userChoice) {
+	private boolean doUserChoice(int userChoice, Scanner input) {
 
 		switch (userChoice) {
 
 		case 1:
-			// TODO Add method call to look up film by it's ID
+			lookUpFilmById(input);
 			return true;
 		case 2:
 			// TODO Add method call to look up film by keyword search
@@ -69,6 +68,28 @@ public class FilmQueryApp {
 
 		}
 
+	}
+	
+	public void lookUpFilmById(Scanner input) {
+		
+		try {
+			System.out.println("Please enter the ID of the film.");
+			int filmId = input.nextInt();
+			input.nextLine();
+			Film film = db.findFilmById(filmId);
+			System.out.println("---------------------------------------------");
+			film.displaySimpleFilmInfo();
+			System.out.println("---------------------------------------------");
+			
+		} 	
+		catch (NullPointerException e) {
+			System.out.println("---------------------------------------------");
+			System.err.println("Sorry, this ID was not found.");
+		}
+		catch (Exception e) {
+			System.out.println("---------------------------------------------");
+			System.err.println("Sorry, this ID was not found.");
+		}
 	}
 
 }

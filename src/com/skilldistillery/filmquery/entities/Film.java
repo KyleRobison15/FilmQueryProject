@@ -141,8 +141,11 @@ public class Film {
 		this.actors = actors;
 	}
 
-	public void displayFilmInfo() {
-		
+	public void displaySimpleFilmInfo() {
+		System.out.println("Title:         " + title);
+		System.out.println("Year Released: " + releaseYear.substring(0,4));
+		System.out.println("Rating:        " + rating);
+		System.out.println("Description:   " + description);
 	}
 
 	@Override
