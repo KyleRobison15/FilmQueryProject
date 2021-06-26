@@ -1,5 +1,6 @@
 package com.skilldistillery.filmquery.entities;
 
+import java.text.NumberFormat;
 import java.util.List;
 
 public class Film {
@@ -151,11 +152,40 @@ public class Film {
 	}
 
 	public void displaySimpleFilmInfo() {
+		int count = 1;
+		
 		System.out.println("Title:         " + title);
 		System.out.println("Year Released: " + releaseYear.substring(0,4));
 		System.out.println("Rating:        " + rating);
 		System.out.println("Description:   " + description);
 		System.out.println(language);
+		System.out.println("Actors:        ");
+		for (Actor actor : actors) {
+			System.out.println(" " + count + ". " + actor);
+			count++;
+		}
+	}
+	
+	public void displayAllFilmInfo() {
+		int count = 1;
+		NumberFormat formatter = NumberFormat.getCurrencyInstance();
+		
+		System.out.println("Title:         " + title);
+		System.out.println("Year Released: " + releaseYear.substring(0,4));
+		System.out.println("Rating:        " + rating);
+		System.out.println("Description:   " + description);
+		System.out.println(language);
+		System.out.println("Actors:        ");
+		for (Actor actor : actors) {
+			System.out.println(" " + count + ". " + actor);
+			count++;
+		}
+		
+		System.out.println("Length:            " + length + " minutes");
+		System.out.println("Speacial Features: " + specialFeatures);
+		System.out.println("Rental Rate:       " + formatter.format(rentalRate));
+		System.out.println("Rental Duration:   " + rentalDuration + " days");
+		System.out.println("Replacement Cost:  " + formatter.format(replacementCost));
 	}
 
 	@Override

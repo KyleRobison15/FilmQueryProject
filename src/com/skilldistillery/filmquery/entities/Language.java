@@ -15,7 +15,6 @@ public class Language {
 		this.languageName = languageName;
 	}
 	
-	
 	public int getId() {
 		return id;
 	}
