@@ -16,8 +16,10 @@ public class Film {
 	private double replacementCost;
 	private String rating;
 	private String specialFeatures;
-	private List<Actor> actors;
 	private Language language;
+	private Category category;
+	private List<Actor> actors;
+	private List<InventoryItem> filmsInInventory;
 
 	public Film() {
 		
@@ -25,12 +27,14 @@ public class Film {
 	
 	public Film(int filmId, String title, String description, String releaseYear, int languageId, int rentalDuration,
 			double rentalRate, int length, double replacementCost, String rating, String specialFeatures) {
-		this(filmId, title, description, releaseYear, languageId, rentalDuration, rentalRate, length, replacementCost, rating, specialFeatures, null, null);
+		this(filmId, title, description, releaseYear, languageId, rentalDuration, rentalRate, length, replacementCost, rating, specialFeatures, null, null, null, null);
 
 	}
 
 	public Film(int filmId, String title, String description, String releaseYear, int languageId, int rentalDuration,
-			double rentalRate, int length, double replacementCost, String rating, String specialFeatures, List<Actor> actors, Language language) {
+			double rentalRate, int length, double replacementCost, String rating, String specialFeatures, 
+			Language language, Category category, List<Actor> actors, List<InventoryItem> filmsInInventory) {
+		
 		super();
 		this.filmId = filmId;
 		this.title = title;
@@ -43,8 +47,10 @@ public class Film {
 		this.replacementCost = replacementCost;
 		this.rating = rating;
 		this.specialFeatures = specialFeatures;
-		this.actors = actors;
 		this.language = language;
+		this.category = category;
+		this.actors = actors;
+		this.filmsInInventory = filmsInInventory;
 	}
 	
 	public int getFilmId() {
@@ -135,14 +141,6 @@ public class Film {
 		this.specialFeatures = specialFeatures;
 	}
 	
-	public List<Actor> getActors() {
-		return actors;
-	}
-
-	public void setActors(List<Actor> actors) {
-		this.actors = actors;
-	}
-	
 	public Language getLanguage() {
 		return language;
 	}
@@ -150,14 +148,39 @@ public class Film {
 	public void setLanguage(Language language) {
 		this.language = language;
 	}
+	
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+	
+	public List<Actor> getActors() {
+		return actors;
+	}
+
+	public void setActors(List<Actor> actors) {
+		this.actors = actors;
+	}
+
+	public List<InventoryItem> getFilmsInInventory() {
+		return filmsInInventory;
+	}
+
+	public void setFilmsInInventory(List<InventoryItem> filmsInInventory) {
+		this.filmsInInventory = filmsInInventory;
+	}
 
 	public void displaySimpleFilmInfo() {
 		int count = 1;
 		
 		System.out.println("Title:         " + title);
-		System.out.println("Year Released: " + releaseYear.substring(0,4));
+		System.out.println(category);
 		System.out.println("Rating:        " + rating);
 		System.out.println("Description:   " + description);
+		System.out.println("Year Released: " + releaseYear.substring(0,4));
 		System.out.println(language);
 		System.out.println("Actors:        ");
 		for (Actor actor : actors) {
@@ -171,9 +194,10 @@ public class Film {
 		NumberFormat formatter = NumberFormat.getCurrencyInstance();
 		
 		System.out.println("Title:         " + title);
-		System.out.println("Year Released: " + releaseYear.substring(0,4));
+		System.out.println(category);
 		System.out.println("Rating:        " + rating);
 		System.out.println("Description:   " + description);
+		System.out.println("Year Released: " + releaseYear.substring(0,4));
 		System.out.println(language);
 		System.out.println("Actors:        ");
 		for (Actor actor : actors) {
@@ -187,6 +211,29 @@ public class Film {
 		System.out.println("Rental Duration:   " + rentalDuration + " days");
 		System.out.println("Replacement Cost:  " + formatter.format(replacementCost));
 	}
+	
+	public void displayFilmInventory() {
+		int newCount = 0;
+		int usedCount = 0;
+		int totalCount = 0;
+		for (InventoryItem item : filmsInInventory) {
+			
+			if (item.getMediaCondition().equalsIgnoreCase("New")) {
+				newCount++;
+			}
+			else if (item.getMediaCondition().equalsIgnoreCase("Used")) {
+				usedCount++;
+			}
+		}
+		totalCount = newCount + usedCount;
+		
+		
+		System.out.println("---- Copies of " + title + " in stock ----");
+		System.out.println("New:    " + newCount);
+		System.out.println("Used:  " + usedCount);
+		System.out.println("Total: " + totalCount);
+		System.out.println("---------------------------------------------");
+	}
 
 	@Override
 	public String toString() {
@@ -196,8 +243,8 @@ public class Film {
 				.append(languageId).append(", rentalDuration=").append(rentalDuration).append(", rentalRate=")
 				.append(rentalRate).append(", length=").append(length).append(", replacementCost=")
 				.append(replacementCost).append(", rating=").append(rating).append(", specialFeatures=")
-				.append(specialFeatures).append(", actors=").append(actors).append(", language=").append(language)
-				.append("]");
+				.append(specialFeatures).append(", language=").append(language).append(", category=").append(category)
+				.append(", actors=").append(actors).append(", filmsInInventory=").append(filmsInInventory).append("]");
 		return builder.toString();
 	}
 
@@ -205,8 +252,12 @@ public class Film {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((actors == null) ? 0 : actors.hashCode());
+		result = prime * result + ((category == null) ? 0 : category.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
 		result = prime * result + filmId;
+		result = prime * result + ((filmsInInventory == null) ? 0 : filmsInInventory.hashCode());
+		result = prime * result + ((language == null) ? 0 : language.hashCode());
 		result = prime * result + languageId;
 		result = prime * result + length;
 		result = prime * result + ((rating == null) ? 0 : rating.hashCode());
@@ -231,12 +282,32 @@ public class Film {
 		if (getClass() != obj.getClass())
 			return false;
 		Film other = (Film) obj;
+		if (actors == null) {
+			if (other.actors != null)
+				return false;
+		} else if (!actors.equals(other.actors))
+			return false;
+		if (category == null) {
+			if (other.category != null)
+				return false;
+		} else if (!category.equals(other.category))
+			return false;
 		if (description == null) {
 			if (other.description != null)
 				return false;
 		} else if (!description.equals(other.description))
 			return false;
 		if (filmId != other.filmId)
+			return false;
+		if (filmsInInventory == null) {
+			if (other.filmsInInventory != null)
+				return false;
+		} else if (!filmsInInventory.equals(other.filmsInInventory))
+			return false;
+		if (language == null) {
+			if (other.language != null)
+				return false;
+		} else if (!language.equals(other.language))
 			return false;
 		if (languageId != other.languageId)
 			return false;
@@ -270,5 +341,5 @@ public class Film {
 			return false;
 		return true;
 	}
-	
+
 }

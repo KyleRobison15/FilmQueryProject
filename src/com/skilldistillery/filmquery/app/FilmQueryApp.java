@@ -35,7 +35,7 @@ public class FilmQueryApp {
 			System.out.println("Please select an option from the menu below.");
 			System.out.println("---------------------------------------------");
 			System.out.println("1. Look up a film by its ID");
-			System.out.println("2. Look up a films by a keyword search");
+			System.out.println("2. Look up films by a keyword search");
 			System.out.println("3. Exit Application");
 			System.out.println("---------------------------------------------");
 
@@ -58,7 +58,7 @@ public class FilmQueryApp {
 				film.displaySimpleFilmInfo();
 				System.out.println("---------------------------------------------");
 				userChoice = filmSubMenu(input, film);
-				if(userChoice == 3) {
+				if(userChoice == 4) {
 					return false;
 				}
 				else {
@@ -86,9 +86,14 @@ public class FilmQueryApp {
 				System.out.println("---------------------------------------------");
 				return true;
 			case 2:
-				startUserInterface(input);
+				System.out.println("---------------------------------------------");
+				film.displayFilmInventory();
+				System.out.println("---------------------------------------------");
 				return true;
 			case 3:
+				startUserInterface(input);
+				return true;
+			case 4:
 				System.out.println("Thanks for using the Film Query App - Goodbye!");
 				return false;
 			default:
@@ -130,8 +135,9 @@ public class FilmQueryApp {
 		System.out.println("Please select an option from the menu below.");
 		System.out.println("---------------------------------------------");
 		System.out.println("1. View all film details");
-		System.out.println("2. Return to Main Menu");
-		System.out.println("3. Exit Application");
+		System.out.println("2. View copies in stock");
+		System.out.println("3. Return to Main Menu");
+		System.out.println("4. Exit Application");
 		System.out.println("---------------------------------------------");
 
 		userChoice = input.nextInt();

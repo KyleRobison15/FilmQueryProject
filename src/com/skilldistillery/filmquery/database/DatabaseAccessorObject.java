@@ -41,7 +41,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			stmt.setInt(1, filmId);
 			ResultSet filmResult = stmt.executeQuery();
 			while (filmResult.next()) {
-				film = createFilm(filmResult);
+				film = createFilmFromQuery(filmResult);
 			}
 
 			filmResult.close();
@@ -70,7 +70,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			ResultSet filmResult = stmt.executeQuery();
 			while (filmResult.next()) {
 				Film film = new Film();
-				film = createFilm(filmResult);
+				film = createFilmFromQuery(filmResult);
 				films.add(film);
 			}
 
@@ -86,7 +86,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		return films;
 	}
 
-	public Film createFilm(ResultSet filmResult) {
+	public Film createFilmFromQuery(ResultSet filmResult) {
 		Film film = new Film();
 
 		try {
@@ -102,8 +102,10 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			film.setReplacementCost(filmResult.getDouble("replacement_cost"));
 			film.setSpecialFeatures(filmResult.getString("special_features"));
 			film.setRating(filmResult.getString("rating"));
-			film.setActors(findActorsByFilmId(filmResult.getInt("id")));
 			film.setLanguage(findLanguageByFilmId(filmResult.getInt("id")));
+			film.setCategory(findCategoryByFilmId(filmResult.getInt("id")));
+			film.setActors(findActorsByFilmId(filmResult.getInt("id")));
+			film.setFilmsInInventory(findInventoryByFilmId(filmResult.getInt("id")));
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -219,4 +221,83 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 
 		return language;
 	}
+	
+/////////////////////////////////////////////////// CATEGORY ///////////////////////////////////////////////////
+	
+	@Override
+	public Category findCategoryByFilmId(int filmId) {
+		
+		Category category = null;
+		
+		try {
+			Connection conn = DriverManager.getConnection(URL, user, pass);
+			
+			String sql = "SELECT * "
+					  +  "FROM category "
+					  +  "JOIN film_category ON film_category.category_id = category.id "
+					  +  "JOIN film ON film_category.film_id = film.id WHERE film.id = ?";
+			
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, filmId);
+			ResultSet categoryResult = stmt.executeQuery();
+			while (categoryResult.next()) {
+				category = new Category();
+				category.setCategoryId(categoryResult.getInt("id"));
+				category.setCategoryName(categoryResult.getString("name"));
+			}
+			
+			categoryResult.close();
+			stmt.close();
+			conn.close();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return category;
+	}
+	
+/////////////////////////////////////////////////// INVENTORY ITEM ///////////////////////////////////////////////////
+	
+	@Override
+	public List<InventoryItem> findInventoryByFilmId(int filmId) {
+		
+		List<InventoryItem> inventory = new ArrayList<>();
+		
+		try {
+			Connection conn = DriverManager.getConnection(URL, user, pass);
+			
+			String sql = "SELECT * "
+					   + "FROM inventory_item "
+					   + "WHERE film_id = ? AND media_condition != 'lost'";
+			
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, filmId);
+			ResultSet inventoryResult = stmt.executeQuery();
+			while (inventoryResult.next()) {
+				int inventoryId = inventoryResult.getInt("inventory_item.id");
+				int inventoryFilmId = inventoryResult.getInt("inventory_item.film_id");
+				int storeId = inventoryResult.getInt("inventory_item.store_id");
+				String mediaCondition = inventoryResult.getString("inventory_item.media_condition");
+				String lastUpdate = inventoryResult.getString("inventory_item.last_update");
+
+				InventoryItem item = new InventoryItem(inventoryId, inventoryFilmId, storeId, mediaCondition, lastUpdate);
+				inventory.add(item);
+			}
+			
+			inventoryResult.close();
+			stmt.close();
+			conn.close();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return inventory;
+	}
+	
+	
+	
 }
