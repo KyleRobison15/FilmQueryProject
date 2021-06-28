@@ -8,21 +8,22 @@ The most important concept featured in this project is object-relational mapping
 
 For example, the relational database used for this project has a table called "Film." The film table has attributes (columns of data) such as ID, title, and description. So I created a Java class called Film which has the fields ID, title, and description and all the other attributes contained in the database. From there I utilized the film class to construct java objects which was absolutely essential for the application to work. When the user requests to see a film's information, I could retrieve the data from the database and construct a Film object for display to the user.
 
-### MySQL and Java Database Connection (JDBC)
-In this project MySQL was used as the relational database management system (RDBMS). An RDBMS is...
+### MySQL, Java Database Connectivity (JDBC) and Maven
+This entire project would not be possible without a few very important technologies:
 
-As I mentioned earlier, when the user requests to see a film's information, I was able to retrieve the data related to that film from the database and construct a Film object for display to the user. The tool I used to connect to the database so I could retrieve data is called Java Database Connection (JDBC).
+#### MySQL
+In this project MySQL was used as the relational database management system (RDBMS). Using MySQL allowed me to implement the database containing all the data needed for the application to work.
 
-The JDBC...
-connection
-prepared statements and binding (avoidance of SQL injection)
-result set
+#### Java Database Connectivity (JDBC) and Maven
+As I mentioned earlier, when the user requests to see a film's information, I was able to retrieve the data related to that film from the database and construct a Film object for display to the user. The tool I used to connect to the database so I could retrieve data is called Java Database Connectivity (JDBC).
 
+The JDBC is a powerful API that allowed me to run SQL commands from my application code. This is what allowed me to bridge the gap from user requests for data into an SQL command that actually retrieves that information from the data base.
 
-### Technologies Used
-In addition to MySQL and Java Database Connection, I also used the following technologies:
-* Maven - Dependencies Manager
-* MAMP - ???
+The JDBC works by first allowing us to connect to the database and then generate what are called prepared statements to query the database and retrieve the information we need. The prepared statements are standard SQL commands. When a prepared statement is executed, the resulting data is retrieved and stored in a result set that we can then proceed to utilize through object relational mapping.
+
+The JDBC also allowed me to bind specific input from the user to a specific part of the SQL command. For example, when the user requests to look up a film by that film's unique ID, I can bind the unique ID to the SQL command in the prepared statement. This prevents SQL injection which can lead to unexpected and potentially malicious results from executing the query.
+
+Finally, I also utilized a tool called Maven as the dependencies manager for the JDBC.
 
 ### Other Java Specific Features
 * Object Oriented Design
